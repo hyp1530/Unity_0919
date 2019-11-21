@@ -4,31 +4,48 @@ using UnityEngine;
 
 public class Lady : MonoBehaviour {
     private Animator ani;
-    private Rigidbody rig;
-    [Header("速度"),Range(0f,100f)]
+    private Rigidbody rig;  
+
+    [Header("速度"),Range(1f,100f)]
     public float speed = 1.5f;
+
+    [Header("旋轉速度"), Range(1f, 100f)]
+    public float turn = 1.5f;
+
 
     public string parRun = "跑步開關";
     public string parAtk = "攻擊觸發";
     public string parDam = "受傷觸發";
     public string parJump = "跳躍觸發";
     public string parDead = "死亡開關";
-    void Start () {
+    void Start ()
+    {
 
         ani = GetComponent<Animator>();
         rig = GetComponent<Rigidbody>();
 	}
+    private void Update()
+    {
+        Turn();
+        Attack();
+    }
+
     private void FixedUpdate()
     {
         Walk();
-        Jump();
-        Attack();
+        Jump();      
     }
 
     private void Walk()
     {
-        ani.SetBool(parRun, Input.GetAxis("Vertical") != 0 || Input.GetAxis("Vertical") != 0);
-        rig.AddForce(transform.forward * Input.GetAxisRaw("Vertical") * speed);
+        ani.SetBool(parRun, Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0);
+
+        rig.AddForce(transform.forward * Input.GetAxisRaw("Vertical") * speed+ transform.right* Input.GetAxisRaw("Horizontal") * speed);
+    }
+    private void Turn()
+    {
+        float x = Input.GetAxis("Mouse X");   
+        transform.Rotate(0, x*turn*Time.deltaTime, 0);
     }
     private void Jump()
     {
